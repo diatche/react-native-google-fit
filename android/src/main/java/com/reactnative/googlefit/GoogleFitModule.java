@@ -435,4 +435,39 @@ public class GoogleFitModule extends ReactContextBaseJavaModule implements Lifec
             promise.reject(e);
         }
     }
+
+    @ReactMethod
+    public void getBloodGlucoseSamples(double startDate,
+                                       double endDate,
+                                       Promise promise) {
+        try {
+            promise.resolve(mGoogleFitManager.getBloodGlucoseHistory().getHistory((long) startDate, (long) endDate));
+        } catch (IllegalViewOperationException e) {
+            promise.reject(e);
+        }
+    }
+
+    @ReactMethod
+    public void saveBloodGlucoseSamples(ReadableArray bloodGlucoseArray,
+                                        Callback errorCallback,
+                                        Callback successCallback) {
+        try {
+            BloodGlucoseHistory bloodGlucoseHistory = mGoogleFitManager.getBloodGlucoseHistory();
+            successCallback.invoke(bloodGlucoseHistory.save(bloodGlucoseArray));
+        } catch (IllegalViewOperationException e) {
+            errorCallback.invoke(e.getMessage());
+        }
+    }
+
+    @ReactMethod
+    public void deleteBloodGlucoseSamples(ReadableMap options,
+                                          Callback errorCallback,
+                                          Callback successCallback) {
+        try {
+            BloodGlucoseHistory bloodGlucoseHistory = mGoogleFitManager.getBloodGlucoseHistory();
+            successCallback.invoke(bloodGlucoseHistory.delete(options));
+        } catch (IllegalViewOperationException e) {
+            errorCallback.invoke(e.getMessage());
+        }
+    }
 }

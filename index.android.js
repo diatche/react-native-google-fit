@@ -11,6 +11,7 @@ import {
   prepareDailyResponse,
   prepareResponse,
   prepareHydrationResponse,
+  prepareBloodGlucoseResponse,
   prepareDeleteOptions,
   getWeekBoundary,
   prepareInput,
@@ -568,6 +569,43 @@ class RNGoogleFit {
   saveSleep = async (options) => {
     const result = await googleFit.saveSleep(options);
     return result;
+  }
+
+  getBloodGlucoseSamples = async (options) => {
+    const { startDate, endDate } = prepareInput(options);
+    const result = await googleFit.getBloodGlucoseSamples(
+      startDate,
+      endDate
+    );
+
+    if (result.length > 0) {
+      return prepareBloodGlucoseResponse(result);
+    }
+    return result;
+  }
+
+  saveBloodGlucoseSamples(bloodGlucoseArray, callback) {
+    googleFit.saveBloodGlucoseSamples(
+      bloodGlucoseArray,
+      msg => {
+        callback(true, msg)
+      },
+      res => {
+        callback(false, res)
+      }
+    )
+  }
+
+  deleteBloodGlucoseSamples = (options, callback) => {
+    googleFit.deleteBloodGlucoseSamples(
+      prepareDeleteOptions(options),
+      msg => {
+        callback(msg, false)
+      },
+      res => {
+        callback(false, res)
+      }
+    )
   }
 }
 

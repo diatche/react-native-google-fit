@@ -154,6 +154,20 @@ declare module 'react-native-google-fit' {
       options: SleepSample
     ) => Promise<Boolean | undefined>
 
+    getBloodGlucoseSamples: (
+      options: StartAndEndDate
+    ) => Promise<BloodGlucoseSample[]>
+
+    saveBloodGlucoseSamples: (
+      bloodGlucoseArray: BloodGlucoseSampleInput[],
+      callback: (isError: boolean, result: true) => void
+    ) => void
+
+    deleteBloodGlucoseSamples: (
+      options: DeleteOptions,
+      callback: (isError: boolean, result: true) => void
+    ) => void
+
     isAvailable(callback: (isError: boolean, result: boolean) => void): void
 
     isEnabled(callback: (isError: boolean, result: boolean) => void): void
@@ -194,6 +208,20 @@ declare module 'react-native-google-fit' {
     date: string
   };
 
+  export type BloodGlucoseSample = {
+    addedBy: string
+    /**
+     * The blood glucose concentration is measured
+     * in mmol/L (1 mmol/L is equivalent to 18 mg/dL).
+     */
+    bloodGlucoseLevel: number
+    temporalRelationToMeal: TemporalRelationToMeal
+    mealType: MealType
+    temporalRelationToSleep: TemporalRelationToSleep
+    bloodGlucoseSpecimenSource: BloodGlucoseSpecimenSource
+    date: string
+  };
+
   export type FoodIntake = {
     mealType: MealType
     foodName: string
@@ -208,6 +236,19 @@ declare module 'react-native-google-fit' {
   export type Hydration = {
     date: number
     waterConsumed: number
+  };
+
+  export type BloodGlucoseSampleInput = {
+    date: number
+    /**
+     * The blood glucose concentration is measured
+     * in mmol/L (1 mmol/L is equivalent to 18 mg/dL).
+     */
+    bloodGlucoseLevel: number
+    temporalRelationToMeal: TemporalRelationToMeal
+    mealType: MealType
+    temporalRelationToSleep: TemporalRelationToSleep
+    bloodGlucoseSpecimenSource: BloodGlucoseSpecimenSource
   };
 
   export type DeleteOptions = {
@@ -325,6 +366,32 @@ declare module 'react-native-google-fit' {
     LUNCH = 2,
     DINNER = 3,
     SNACK = 4,
+  }
+
+  export enum TemporalRelationToMeal {
+    UNKNOWN = 0,
+    GENERAL = 1,
+    FASTING = 2,
+    BEFORE_MEAL = 3,
+    AFTER_MEAL = 4,
+  }
+
+  export enum TemporalRelationToSleep {
+    UNKNOWN = 0,
+    FULLY_AWAKE = 1,
+    BEFORE_SLEEP = 2,
+    ON_WAKING = 3,
+    DURING_SLEEP = 4,
+  }
+
+  export enum BloodGlucoseSpecimenSource {
+    UNKNOWN = 0,
+    INTERSTITIAL_FLUID = 1,
+    CAPILLARY_BLOOD = 2,
+    PLASMA = 3,
+    SERUM = 4,
+    TEARS = 5,
+    WHOLE_BLOOD = 6,
   }
 
   export type Nutrients = {

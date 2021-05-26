@@ -80,6 +80,18 @@ export function prepareHydrationResponse(response) {
   })
 }
 
+export function prepareBloodGlucoseResponse(response) {
+  return response.map(el => {
+    el.date = new Date(el.date).toISOString()
+    el.bloodGlucoseLevel = Math.round(Number(el.bloodGlucoseLevel) * 1e4) / 1e4
+    el.temporalRelationToMeal = Number(el.temporalRelationToMeal || 0)
+    el.mealType = Number(el.mealType || 0)
+    el.temporalRelationToSleep = Number(el.temporalRelationToSleep || 0)
+    el.bloodGlucoseSpecimenSource = Number(el.bloodGlucoseSpecimenSource || 0)
+    return el
+  })
+}
+
 function getFormattedDate(date) {
   const day = ('0' + date.getDate()).slice(-2)
   const month = ('0' + (date.getMonth() + 1)).slice(-2)
