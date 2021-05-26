@@ -11,7 +11,9 @@ import com.google.android.gms.fitness.data.DataPoint;
 import com.google.android.gms.fitness.data.DataSet;
 import com.google.android.gms.fitness.data.DataSource;
 import com.google.android.gms.fitness.data.DataType;
+import com.google.android.gms.fitness.data.HealthDataTypes;
 import com.google.android.gms.fitness.data.Field;
+import com.google.android.gms.fitness.data.HealthFields;
 import com.google.android.gms.fitness.data.Value;
 import com.google.android.gms.fitness.request.DataReadRequest;
 import com.google.android.gms.fitness.result.DataReadResult;
@@ -26,7 +28,7 @@ public class BloodGlucoseHistory {
 
   private static final String TAG = "BloodGlucoseHistory";
   private static final int MAX_DATAPOINTS_PER_SINGLE_REQUEST = 900;
-  private DataType dataType = DataType.TYPE_BLOOD_GLUCOSE;
+  private DataType dataType = HealthDataTypes.TYPE_BLOOD_GLUCOSE;
 
   public BloodGlucoseHistory(ReactContext reactContext, GoogleFitManager googleFitManager) {
     this.mReactContext = reactContext;
@@ -66,11 +68,11 @@ public class BloodGlucoseHistory {
   private void processDataSet(DataSet dataSet, WritableArray map) {
     for (DataPoint dp : dataSet.getDataPoints()) {
       WritableMap bloodGlucoseMap = Arguments.createMap();
-      Value bloodGlucoseLevel = dp.getValue((Field.FIELD_BLOOD_GLUCOSE_LEVEL));
-      Value temporalRelationToMeal = dp.getValue((Field.FIELD_TEMPORAL_RELATION_TO_MEAL));
+      Value bloodGlucoseLevel = dp.getValue((HealthFields.FIELD_BLOOD_GLUCOSE_LEVEL));
+      Value temporalRelationToMeal = dp.getValue((HealthFields.FIELD_TEMPORAL_RELATION_TO_MEAL));
       Value mealType = dp.getValue((Field.FIELD_MEAL_TYPE));
-      Value temporalRelationToSleep = dp.getValue((Field.FIELD_TEMPORAL_RELATION_TO_SLEEP));
-      Value bloodGlucoseSpecimenSource = dp.getValue((Field.FIELD_BLOOD_GLUCOSE_SPECIMEN_SOURCE));
+      Value temporalRelationToSleep = dp.getValue((HealthFields.FIELD_TEMPORAL_RELATION_TO_SLEEP));
+      Value bloodGlucoseSpecimenSource = dp.getValue((HealthFields.FIELD_BLOOD_GLUCOSE_SPECIMEN_SOURCE));
 
       bloodGlucoseMap.putDouble("date", dp.getEndTime(TimeUnit.MILLISECONDS));
       bloodGlucoseMap.putDouble("bloodGlucoseLevel", bloodGlucoseLevel.asFloat());
@@ -93,11 +95,11 @@ public class BloodGlucoseHistory {
       if (bloodGlucoseSample != null) {
         dataPoints.add(DataPoint.builder(bloodGlucoseSource)
           .setTimestamp((long) bloodGlucoseSample.getDouble("date"), TimeUnit.MILLISECONDS)
-          .setField(Field.FIELD_BLOOD_GLUCOSE_LEVEL, (float) bloodGlucoseSample.getDouble("bloodGlucoseLevel"))
-          .setField(Field.FIELD_TEMPORAL_RELATION_TO_MEAL, (int) bloodGlucoseSample.getInt("temporalRelationToMeal"))
+          .setField(HealthFields.FIELD_BLOOD_GLUCOSE_LEVEL, (float) bloodGlucoseSample.getDouble("bloodGlucoseLevel"))
+          .setField(HealthFields.FIELD_TEMPORAL_RELATION_TO_MEAL, (int) bloodGlucoseSample.getInt("temporalRelationToMeal"))
           .setField(Field.FIELD_MEAL_TYPE, (int) bloodGlucoseSample.getInt("mealType"))
-          .setField(Field.FIELD_TEMPORAL_RELATION_TO_SLEEP, (int) bloodGlucoseSample.getInt("temporalRelationToSleep"))
-          .setField(Field.FIELD_BLOOD_GLUCOSE_SPECIMEN_SOURCE, (int) bloodGlucoseSample.getInt("bloodGlucoseSpecimenSource"))
+          .setField(HealthFields.FIELD_TEMPORAL_RELATION_TO_SLEEP, (int) bloodGlucoseSample.getInt("temporalRelationToSleep"))
+          .setField(HealthFields.FIELD_BLOOD_GLUCOSE_SPECIMEN_SOURCE, (int) bloodGlucoseSample.getInt("bloodGlucoseSpecimenSource"))
           .build());
       }
       if (dataPoints.size() % MAX_DATAPOINTS_PER_SINGLE_REQUEST == 0) {
