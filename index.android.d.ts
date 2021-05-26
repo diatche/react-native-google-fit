@@ -245,10 +245,10 @@ declare module 'react-native-google-fit' {
      * in mmol/L (1 mmol/L is equivalent to 18 mg/dL).
      */
     bloodGlucoseLevel: number
-    temporalRelationToMeal: TemporalRelationToMeal
-    mealType: MealType
-    temporalRelationToSleep: TemporalRelationToSleep
-    bloodGlucoseSpecimenSource: BloodGlucoseSpecimenSource
+    temporalRelationToMeal?: TemporalRelationToMeal
+    mealType?: MealType
+    temporalRelationToSleep?: TemporalRelationToSleep
+    bloodGlucoseSpecimenSource?: BloodGlucoseSpecimenSource
   };
 
   export type DeleteOptions = {
