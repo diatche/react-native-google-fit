@@ -11,6 +11,7 @@ import {
   prepareDailyResponse,
   prepareResponse,
   prepareHydrationResponse,
+  prepareBloodGlucoseInputArray,
   prepareBloodGlucoseResponse,
   prepareDeleteOptions,
   getWeekBoundary,
@@ -586,7 +587,7 @@ class RNGoogleFit {
 
   saveBloodGlucoseSamples(bloodGlucoseArray, callback) {
     googleFit.saveBloodGlucoseSamples(
-      bloodGlucoseArray,
+      prepareBloodGlucoseInputArray(bloodGlucoseArray),
       msg => {
         callback(true, msg)
       },

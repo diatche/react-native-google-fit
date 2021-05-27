@@ -80,6 +80,18 @@ export function prepareHydrationResponse(response) {
   })
 }
 
+export function prepareBloodGlucoseInputArray(bloodGlucoseArray) {
+  return bloodGlucoseArray.map(el => {
+    el.date = new Date(el.date).valueOf()
+    el.bloodGlucoseLevel = Math.round(Number(el.bloodGlucoseLevel) * 1e4) / 1e4
+    el.temporalRelationToMeal = Number(el.temporalRelationToMeal || 0)
+    el.mealType = Number(el.mealType || 0)
+    el.temporalRelationToSleep = Number(el.temporalRelationToSleep || 0)
+    el.bloodGlucoseSpecimenSource = Number(el.bloodGlucoseSpecimenSource || 0)
+    return el
+  })
+}
+
 export function prepareBloodGlucoseResponse(response) {
   return response.map(el => {
     el.date = new Date(el.date).toISOString()
