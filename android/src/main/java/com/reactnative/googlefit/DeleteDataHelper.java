@@ -2,10 +2,12 @@ package com.reactnative.googlefit;
 
 import android.os.AsyncTask;
 
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.fitness.Fitness;
 import com.google.android.gms.fitness.data.DataType;
 import com.google.android.gms.fitness.request.DataDeleteRequest;
 
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 class DeleteDataHelper extends AsyncTask<Void, Void, Void> {
@@ -13,6 +15,7 @@ class DeleteDataHelper extends AsyncTask<Void, Void, Void> {
   private long endTime;
   private DataType dataType;
   private GoogleFitManager googleFitManager;
+  public com.google.android.gms.common.api.Status status;
 
   DeleteDataHelper(
     long startTime,
@@ -33,8 +36,9 @@ class DeleteDataHelper extends AsyncTask<Void, Void, Void> {
       .addDataType(this.dataType)
       .build();
 
-    Fitness.HistoryApi.deleteData(googleFitManager.getGoogleApiClient(), request)
-      .await(1, TimeUnit.MINUTES);
+    status =
+      Fitness.HistoryApi.deleteData(googleFitManager.getGoogleApiClient(), request)
+        .await(1, TimeUnit.MINUTES);
 
     return null;
   }

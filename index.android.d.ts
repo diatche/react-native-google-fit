@@ -159,14 +159,12 @@ declare module 'react-native-google-fit' {
     ) => Promise<BloodGlucoseSample[]>
 
     saveBloodGlucoseSamples: (
-      bloodGlucoseArray: BloodGlucoseSampleInput[],
-      callback: (isError: boolean, result: true) => void
-    ) => void
+      bloodGlucoseArray: BloodGlucoseSampleInput[]
+    ) => Promise<void>
 
     deleteBloodGlucoseSamples: (
-      options: DeleteOptions,
-      callback: (isError: boolean, result: true) => void
-    ) => void
+      options: DeleteOptions
+    ) => Promise<void>
 
     isAvailable(callback: (isError: boolean, result: boolean) => void): void
 

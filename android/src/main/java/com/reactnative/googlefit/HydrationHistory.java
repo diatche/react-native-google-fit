@@ -1,6 +1,7 @@
 package com.reactnative.googlefit;
 
 import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
@@ -76,7 +77,7 @@ public class HydrationHistory {
     }
   }
 
-  public boolean save(ReadableArray hydrationArray) {
+  public boolean save(ReadableArray hydrationArray, Promise promise) {
     DataSource hydrationSource = this.getDataSource();
     ArrayList<DataPoint> dataPoints = new ArrayList<DataPoint>();
     ArrayList<DataSet> dataSets = new ArrayList<DataSet>();
@@ -98,7 +99,7 @@ public class HydrationHistory {
     if (dataPoints.size() > 0) {
       dataSets.add(DataSet.builder(hydrationSource).addAll(dataPoints).build());
     }
-    new SaveDataHelper(dataSets, googleFitManager).execute();
+    new SaveDataHelper(dataSets, googleFitManager, promise).execute();
 
     return true;
   }

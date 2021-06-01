@@ -398,13 +398,12 @@ public class GoogleFitModule extends ReactContextBaseJavaModule implements Lifec
 
     @ReactMethod
     public void saveHydration(ReadableArray hydrationArray,
-                           Callback errorCallback,
-                           Callback successCallback) {
+                              Promise promise) {
         try {
             HydrationHistory hydrationHistory = mGoogleFitManager.getHydrationHistory();
-            successCallback.invoke(hydrationHistory.save(hydrationArray));
-        } catch (IllegalViewOperationException e) {
-            errorCallback.invoke(e.getMessage());
+            hydrationHistory.save(hydrationArray, promise);
+        } catch (Exception e) {
+            promise.reject(e.getMessage());
         }
     }
     @ReactMethod
@@ -442,32 +441,30 @@ public class GoogleFitModule extends ReactContextBaseJavaModule implements Lifec
                                        Promise promise) {
         try {
             promise.resolve(mGoogleFitManager.getBloodGlucoseHistory().getHistory((long) startDate, (long) endDate));
-        } catch (IllegalViewOperationException e) {
-            promise.reject(e);
+        } catch (Exception e) {
+            promise.reject(e.toString());
         }
     }
 
     @ReactMethod
     public void saveBloodGlucoseSamples(ReadableArray bloodGlucoseArray,
-                                        Callback errorCallback,
-                                        Callback successCallback) {
+                                        Promise promise) {
         try {
             BloodGlucoseHistory bloodGlucoseHistory = mGoogleFitManager.getBloodGlucoseHistory();
-            successCallback.invoke(bloodGlucoseHistory.save(bloodGlucoseArray));
-        } catch (IllegalViewOperationException e) {
-            errorCallback.invoke(e.getMessage());
+            bloodGlucoseHistory.save(bloodGlucoseArray, promise);
+        } catch (Exception e) {
+            promise.reject(e.toString());
         }
     }
 
     @ReactMethod
     public void deleteBloodGlucoseSamples(ReadableMap options,
-                                          Callback errorCallback,
-                                          Callback successCallback) {
+                                          Promise promise) {
         try {
             BloodGlucoseHistory bloodGlucoseHistory = mGoogleFitManager.getBloodGlucoseHistory();
-            successCallback.invoke(bloodGlucoseHistory.delete(options));
-        } catch (IllegalViewOperationException e) {
-            errorCallback.invoke(e.getMessage());
+            promise.resolve(bloodGlucoseHistory.delete(options));
+        } catch (Exception e) {
+            promise.reject(e.toString());
         }
     }
 }

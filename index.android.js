@@ -572,7 +572,7 @@ class RNGoogleFit {
     return result;
   }
 
-  getBloodGlucoseSamples = async (options) => {
+  async getBloodGlucoseSamples(options) {
     const { startDate, endDate } = prepareInput(options);
     const result = await googleFit.getBloodGlucoseSamples(
       startDate,
@@ -585,28 +585,16 @@ class RNGoogleFit {
     return result;
   }
 
-  saveBloodGlucoseSamples(bloodGlucoseArray, callback) {
-    googleFit.saveBloodGlucoseSamples(
-      prepareBloodGlucoseInputArray(bloodGlucoseArray),
-      msg => {
-        callback(true, msg)
-      },
-      res => {
-        callback(false, res)
-      }
-    )
+  async saveBloodGlucoseSamples(bloodGlucoseArray) {
+    return await googleFit.saveBloodGlucoseSamples(
+      prepareBloodGlucoseInputArray(bloodGlucoseArray)
+    );
   }
 
-  deleteBloodGlucoseSamples = (options, callback) => {
-    googleFit.deleteBloodGlucoseSamples(
-      prepareDeleteOptions(options),
-      msg => {
-        callback(msg, false)
-      },
-      res => {
-        callback(false, res)
-      }
-    )
+  async deleteBloodGlucoseSamples(options) {
+    return await googleFit.deleteBloodGlucoseSamples(
+      prepareDeleteOptions(options)
+    );
   }
 }
 

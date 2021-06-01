@@ -1,6 +1,7 @@
 package com.reactnative.googlefit;
 
 import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
@@ -44,7 +45,7 @@ public class BloodGlucoseHistory {
       .build();
   }
 
-  public ReadableArray getHistory(long startTime, long endTime) {
+  public ReadableArray getHistory(long startTime, long endTime) throws Exception {
     DateFormat dateFormat = DateFormat.getDateInstance();
 
     DataReadRequest readRequest = new DataReadRequest.Builder()
@@ -54,15 +55,17 @@ public class BloodGlucoseHistory {
     DataReadResult dataReadResult = Fitness.HistoryApi.readData(googleFitManager.getGoogleApiClient(), readRequest)
       .await(1, TimeUnit.MINUTES);
 
-    WritableArray map = Arguments.createArray();
+    if (dataReadResult.getStatus().isSuccess()) {
+      WritableArray map = Arguments.createArray();
 
-    if (dataReadResult.getDataSets().size() > 0) {
-      for (DataSet dataSet : dataReadResult.getDataSets()) {
-        processDataSet(dataSet, map);
+      if (dataReadResult.getDataSets().size() > 0) {
+        for (DataSet dataSet : dataReadResult.getDataSets()) {
+          processDataSet(dataSet, map);
+        }
       }
-    }
 
-    return map;
+      return map;
+    } else throw new Exception(dataReadResult.getStatus().getStatusMessage());
   }
 
   private void processDataSet(DataSet dataSet, WritableArray map) {
@@ -86,7 +89,7 @@ public class BloodGlucoseHistory {
     }
   }
 
-  public boolean save(ReadableArray bloodGlucoseArray) {
+  public void save(ReadableArray bloodGlucoseArray, Promise promise) {
     DataSource bloodGlucoseSource = this.getDataSource();
     ArrayList<DataPoint> dataPoints = new ArrayList<DataPoint>();
     ArrayList<DataSet> dataSets = new ArrayList<DataSet>();
@@ -112,15 +115,17 @@ public class BloodGlucoseHistory {
     if (dataPoints.size() > 0) {
       dataSets.add(DataSet.builder(bloodGlucoseSource).addAll(dataPoints).build());
     }
-    new SaveDataHelper(dataSets, googleFitManager).execute();
-
-    return true;
+    new SaveDataHelper(dataSets, googleFitManager, promise).execute();
   }
 
-  public boolean delete(ReadableMap options) {
+  public boolean delete(ReadableMap options) throws Exception {
     long endTime = (long) options.getDouble("endDate");
     long startTime = (long) options.getDouble("startDate");
-    new DeleteDataHelper(startTime, endTime, this.dataType, googleFitManager).execute();
+    DeleteDataHelper deleteDataHelper = new DeleteDataHelper(startTime, endTime, this.dataType, googleFitManager);
+    deleteDataHelper.execute();
+    if (!deleteDataHelper.status.isSuccess()) {
+      throw new Exception(deleteDataHelper.status.getStatusMessage());
+    }
     return true;
   }
 }
